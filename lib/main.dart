@@ -17,7 +17,7 @@ class MainApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: const LoginScreen(),
+      home: SignUpScreen(),
     );
   }
 }
