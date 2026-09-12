@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutterproject2_app/settings.dart';
+import 'package:provider/provider.dart';
+import 'package:flutterproject2_app/provider/change_value_price.dart';
 
 class Screen extends StatefulWidget {
   const Screen({super.key});
@@ -9,11 +12,12 @@ class Screen extends StatefulWidget {
 
 class _ScreenState extends State<Screen> {
   List<Map<String, dynamic>> products = [
+   
     {'name': 'Laptop', 'quantity': 0, 'price': 300000},
     {'name': 'Phone', 'quantity': 0, 'price': 200000},
     {'name': 'Tv', 'quantity': 0, 'price': 500000},
   ];
-
+ 
   void addToCart(int index) {
     setState(() {
       products[index]['quantity']++;
@@ -77,7 +81,9 @@ class _ScreenState extends State<Screen> {
                   margin: EdgeInsets.all(20),
                   child: ListTile(
                     title: Text(product['name']),
-                    subtitle: Text(product['price'].toString()),
+                    subtitle: Text(
+  (product['price'] * context.watch<ChangeValuePrice>().valuePrice).toString(),
+),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -110,6 +116,42 @@ class _ScreenState extends State<Screen> {
                 ElevatedButton(onPressed: clearCart, child: Text('Clear Cart')),
               ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Structure extends StatefulWidget {
+  const Structure({super.key});
+
+  @override
+  State<Structure> createState() => _StructureState();
+}
+
+class _StructureState extends State<Structure> {
+  int _currentIndex = 0;
+
+  final List<Widget> _pages = const [ SettingScreen()];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _pages[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: _onItemTapped,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
       ),
