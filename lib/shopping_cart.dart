@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterproject2_app/settings.dart';
 import 'package:provider/provider.dart';
 import 'package:flutterproject2_app/provider/change_value_price.dart';
+import 'package:provider/provider.dart';
 
 class Screen extends StatefulWidget {
   const Screen({super.key});
@@ -12,12 +13,11 @@ class Screen extends StatefulWidget {
 
 class _ScreenState extends State<Screen> {
   List<Map<String, dynamic>> products = [
-   
     {'name': 'Laptop', 'quantity': 0, 'price': 300000},
     {'name': 'Phone', 'quantity': 0, 'price': 200000},
     {'name': 'Tv', 'quantity': 0, 'price': 500000},
   ];
- 
+
   void addToCart(int index) {
     setState(() {
       products[index]['quantity']++;
@@ -75,15 +75,17 @@ class _ScreenState extends State<Screen> {
           Expanded(
             child: ListView.builder(
               itemCount: products.length,
-              itemBuilder: (context, index) {
+              itemBuilder: (_, index) {
                 final product = products[index];
                 return Card(
                   margin: EdgeInsets.all(20),
                   child: ListTile(
                     title: Text(product['name']),
                     subtitle: Text(
-  (product['price'] * context.watch<ChangeValuePrice>().valuePrice).toString(),
-),
+                      product['name'] == 'Laptop'
+                          ? context.watch<ChangeValuePrice>().price.toString()
+                          : product['price'].toString(),
+                    ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -97,6 +99,9 @@ class _ScreenState extends State<Screen> {
                         IconButton(
                           onPressed: () {
                             addToCart(index);
+                            context.read<ChangeValuePrice>().setLaptopPrice(
+                              product['quantity'],
+                            );
                           },
                           icon: Icon(Icons.add),
                         ),
@@ -133,7 +138,7 @@ class Structure extends StatefulWidget {
 class _StructureState extends State<Structure> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = const [ SettingScreen()];
+  final List<Widget> _pages = const [SettingScreen()];
 
   void _onItemTapped(int index) {
     setState(() {
